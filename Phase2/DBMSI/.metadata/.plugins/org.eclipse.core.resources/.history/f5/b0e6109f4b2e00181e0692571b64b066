@@ -1,0 +1,81 @@
+package columnar;
+
+import global.AttrType;
+import global.Convert;
+import global.RID;
+import heap.Heapfile;
+import heap.Scan;
+import heap.Tuple;
+
+public class ColumnarFileMetadata {
+
+	public String columnarFileName;
+	public int numberOfColumns;
+	public int tupleLength;
+	public int stringSize;
+	public int[] attributeType;	
+	public String[] heapFileNames;	
+	public String[] columnNames; 
+	public byte[] data;
+
+	public ColumnarFileMetadata() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ColumnarFileMetadata(ColumnarFile cf) {
+		// TODO Auto-generated constructor stub
+
+		this.columnarFileName = cf.columnarFileName;
+		this.numberOfColumns = cf.numberOfColumns;
+		this.tupleLength = cf.tupleLength;
+		this.stringSize = cf.stringSize;
+		this.attributeType = new int[numberOfColumns];
+		this.heapFileNames = cf.heapFileNames;
+		this.columnNames = cf.columnNames;
+		this.data = new byte[this.tupleLength];
+	}
+
+	public ColumnarFileMetadata (String name) {
+
+		ColumnarFileMetadata cfm = null;
+		try	  {
+
+			Heapfile hf = new Heapfile(name);
+			RID rid = new RID();
+			Tuple tuple = new Tuple();
+			Scan s = hf.openScan();
+			tuple = s.getNext(rid);
+			cfm = new ColumnarFileMetadata();
+			int stringSize = cfm.stringSize;
+			cfm.getColumnarFileMetadata(tuple);
+		}
+		catch (Exception e)	  {
+
+			e.printStackTrace();
+		}   
+
+	}
+
+
+	public void getColumnarFileMetadata (Tuple tuple) {
+
+		data = tuple.returnTupleByteArray();
+		this.columnarFileName = Convert.getStrValue(4, data, this.stringSize);
+		this.numberOfColumns = Convert.getIntValue(this.stringSize+4, data);
+		this.tupleLength = Convert.getIntValue(this.stringSize+4+4, data);
+		
+		this.heapFileNames = new String[numberOfColumns];
+		this.columnNames = new String[numberOfColumns];
+		this.attributeType = new int[numberOfColumns];
+
+		int offset = this.stringSize + (3 * 4);
+		for (int i = 0 ; i < this.numberOfColumns ; i++)
+		{
+			this.attributeType[i] = Convert.getIntValue(offset, data);
+			this.columnNames[i] = Convert.getStrValue(offset + 4, data, this.stringSize);
+			this.heapFileNames[i] = Convert.getStrValue(offset + 4 + this.stringSize, data, this.stringSize);
+			offset += (2* this.stringSize)+4;
+		}
+	}
+
+}

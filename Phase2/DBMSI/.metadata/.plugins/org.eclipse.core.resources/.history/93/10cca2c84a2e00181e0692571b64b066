@@ -1,0 +1,65 @@
+package columnar;
+
+import global.AttrType;
+import global.RID;
+import heap.Heapfile;
+import heap.Scan;
+import heap.Tuple;
+
+public class ColumnarFileMetadata {
+
+	public String columnarFileName;
+	public int numberOfColumns;
+	public int tupleLength;
+	public int stringSize;
+	public AttrType[] attributeType;	
+	public String[] heapFileNames;	
+	public String[] columnNames; 
+	public byte[] data;
+
+	public ColumnarFileMetadata() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ColumnarFileMetadata(ColumnarFile cf) {
+		// TODO Auto-generated constructor stub
+
+		this.columnarFileName = cf.columnarFileName;
+		this.numberOfColumns = cf.numberOfColumns;
+		this.tupleLength = cf.tupleLength;
+		this.stringSize = cf.stringSize;
+		this.attributeType = cf.attributeType;
+		this.heapFileNames = cf.heapFileNames;
+		this.columnNames = cf.columnNames;
+		this.data = new byte[this.tupleLength];
+	}
+
+	public ColumnarFileMetadata (String name) {
+
+		ColumnarFileMetadata columnarInfo = null;
+		try	  {
+
+			Heapfile hf = new Heapfile(name);
+			RID rid = new RID();
+			Tuple tuple = new Tuple();
+			Scan s = hf.openScan();
+			tuple = s.getNext(rid);
+			columnarInfo = new ColumnarFileMetadata();
+			Size.STRINGSIZE = columnarInfo.getStringSize(tuple);
+			columnarInfo.getColumnarFileInfo(tuple);
+			System.out.println("num of columns"+columnarInfo.getNumColumns());
+
+		}
+		catch (Exception e)	  {
+
+			e.printStackTrace();
+		}   
+
+	}
+
+
+	public ColumnarFileMetadata getColumnarFileMetadata () {
+		return this;
+	}
+
+}

@@ -1,0 +1,13 @@
+/* File DB.java */
+
+package diskmgr;
+
+import java.io.*;
+import bufmgr.*;
+import columnar.ColumnarFile;
+import global.*;
+
+public class ColumnDB extends DB {
+
+
+}

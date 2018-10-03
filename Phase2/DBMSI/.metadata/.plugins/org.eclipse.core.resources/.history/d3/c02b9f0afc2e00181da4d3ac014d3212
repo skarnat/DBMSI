@@ -1,0 +1,87 @@
+package programs;
+
+import btree.BT;
+import btree.BTreeFile;
+import columnar.ColumnarFile;
+import columnar.ColumnarFileMetadata;
+import global.AttrType;
+import global.Convert;
+import global.RID;
+import global.SystemDefs;
+import heap.Heapfile;
+import heap.Scan;
+import heap.Tuple;
+
+public class Index {
+
+	public static void main(String[] args) {
+
+		String columnDbName = args[0];
+		String columnarFileName = args[1];
+		String columnName = args[2];
+		String indexType = args[3];
+		String []columnNames;
+		int columnNumber = 0;
+
+		BTreeFile btf = null; 
+
+		SystemDefs sysdef = new SystemDefs(columnDbName,10000,100,"Clock");
+
+		AttrType[] types = new AttrType[4];
+
+		types[0] = new AttrType(AttrType.attrInteger);
+		types[1] = new AttrType(AttrType.attrString);
+		types[2] = new AttrType(AttrType.attrString);
+		types[3] = new AttrType(AttrType.attrInteger);
+
+		ColumnarFile cf = new ColumnarFile(columnarFileName, 4, types, 25);
+
+
+		ColumnarFileMetadata cfm = cf.getColumnarFileMetadata(columnarFileName+".hdr");
+		columnNames = cfm.columnNames;
+		cf.columnNames = columnNames;
+
+		for(String str: columnNames) {
+			if(str.equalsIgnoreCase(columnName))
+				break;
+			columnNumber++;
+		}
+
+		Heapfile heapFile = cf.getHeapfileForColumname("col4");
+
+		if(indexType.equalsIgnoreCase("Btree"))
+		{
+			try {
+				RID rid = new RID();
+				Scan scan = heapFile.openScan();
+				Tuple tuple=null;
+				System.out.println("btree name"+"btree"+columnName);
+				try{
+					SystemDefs.JavabaseDB.delete_file_entry("btree"+columnName);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+
+				btf = new BTreeFile("btree"+columnName, AttrType.attrInteger, 4, 1);
+
+				while((tuple=scan.getNext(rid))!=null)
+				{
+					int temp=Convert.getIntValue(0, tuple.getData());
+					btf.insert(new btree.IntegerKey(temp), rid);
+				}
+				BT.printBTree(btf.getHeaderPage());
+				System.out.println("printing leaf pages...");
+				BT.printAllLeafPages(btf.getHeaderPage());
+
+				System.out.println("created Btree index...");
+			} catch (Exception e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+	}	
+
+}

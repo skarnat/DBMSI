@@ -1,0 +1,7 @@
+package value;
+
+public class StringSize {
+
+	public static int STRINGSIZE = 25;
+
+}

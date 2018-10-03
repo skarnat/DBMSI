@@ -1,0 +1,124 @@
+package programs;
+
+import btree.BT;
+import btree.BTreeFile;
+import columnar.ColumnarFile;
+import columnar.ColumnarFileMetadata;
+import global.AttrType;
+import global.Convert;
+import global.RID;
+import global.SystemDefs;
+import global.TID;
+import heap.Heapfile;
+import heap.Scan;
+import heap.Tuple;
+import value.ValueClass;
+
+public class Index {
+
+	//private static BitMapFile bmf = null;	
+	private static BTreeFile btf=null; 
+	private static String columnDbName;
+	private static String columnarFileName;
+	private static String columnName;
+	private static String indexType;
+	private static int columnIndex=0;
+	private static ValueClass value;
+	private static String columnValue; 
+	private static int startRead = 0, startWrite = 0;
+	private static ColumnarFile f = null;
+	private static String []colNames;
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		AttrType[] types = new AttrType[4];
+
+		types[0] = new AttrType(AttrType.attrInteger);
+		types[1] = new AttrType(AttrType.attrString);
+		types[2] = new AttrType(AttrType.attrString);
+		types[3] = new AttrType(AttrType.attrInteger);
+		columnDbName=args[0];
+		columnarFileName=args[1];
+		columnName=args[2];
+		indexType=args[3];
+		//columnValue=args[5];
+		//startRead = pcounter.rcounter;
+		//startWrite = pcounter.wcounter;
+
+		SystemDefs sysdef = new SystemDefs(columnDbName,10000,100,"Clock");
+		f=new ColumnarFile(columnarFileName, 4, types, 25);
+		ColumnarFileMetadata cInfo = f.getColumnarFileMetadata(columnarFileName+".hdr");
+		colNames = cInfo.columnNames;
+		f.columnNames = (colNames);
+
+		for(String str: colNames)
+		{
+			if(str.equalsIgnoreCase(columnName))
+				break;
+			columnIndex++;
+		}
+/*
+		try  
+		{  
+			Integer.parseInt( columnValue );  
+			value=InstantiateColumnarFile.setKeyClass(value, 0, columnValue);
+		}  
+		catch( Exception e)  
+		{  
+			value=InstantiateColumnarFile.setKeyClass(value, 1, columnValue);
+		} 
+
+*/
+		System.out.println ("\n  Begin Index Test: \n");
+		final boolean OK = true;
+		final boolean FAIL = false;
+		int choice=100;
+		final int reclen = 128;
+
+		boolean status = OK;
+		TID tid = new TID();
+
+		//replace by method to get the index of the column from the columnar file 
+		Heapfile reqHFile=f.getHeapfileForColumname(columnName);
+
+
+		if(indexType.equalsIgnoreCase("Btree"))
+		{
+			try 
+			{
+				RID rid=new RID();
+				Scan hScan=reqHFile.openScan();
+				Tuple hTuple=null;
+				System.out.println("btree name"+"btree"+columnName);
+				try{
+					SystemDefs.JavabaseDB.delete_file_entry("btree"+columnName);
+				}catch(Exception e)
+				{
+				}
+
+				btf = new BTreeFile("btree"+columnName, AttrType.attrInteger, 4, 1/*delete*/);
+
+				while((hTuple=hScan.getNext(rid))!=null)
+				{
+					int temp=Convert.getIntValue(0, hTuple.getData());
+					btf.insert(new btree.IntegerKey(temp), rid);
+				}
+				BT.printBTree(btf.getHeaderPage());
+				System.out.println("printing leaf pages...");
+				BT.printAllLeafPages(btf.getHeaderPage());
+
+				System.out.println("created Btree index...");
+			} catch (Exception e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		
+	}
+}
