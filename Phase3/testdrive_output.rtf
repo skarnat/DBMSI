@@ -1,0 +1,218 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf400
+{\fonttbl\f0\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red0\green200\blue125;}
+{\*\expandedcolortbl;;\csgenericrgb\c0\c78431\c49020;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs22 \cf0 ************RUNNING TEST....!!!************\
+**********COLUMNAR INDEX SCAN**********\
+\
+Enter the query in this format (query COLUMNDBNAME COLUMNARFILENAME [TARGETCOLUMNNAMES] [VALUECONSTRAINT NUMBUF] ACCESSTYPE\
+Replacer: Clock\
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 query smalldata_part1 [(A=New_Hampshire|C=8)&D=6&C=6] BTREE\cf0 \
+smalldata_part1\
+smalldata_part1.txt table record inserted: 502\
+Number of disk reads: 14\
+Number of disk writes: 2\
+working\
+BTREE\
+[[New_Hampshire, Business, 6, 6], [New_Hampshire, District_of_Columbia, 6, 6]]\
+**********COLUMNAR INDEX SCAN SUCCESSFULLY COMPLETED**********\
+************COLUMNAR NESTED LOOP JOIN************\
+\
+Enter the query in this format (nlj COLUMNDB OUTERFILE INNERFILE OUTERCONST INNERCONST JOINCONST OUTERACCTYPE INNERACCTYPE [TARGETCOLUMNS] NUMBUF\
+\cf2 nlj column smalldata_part1 smalldata_part2 [(A=New_Hampshire|C=8)&D=6&C=6] [(A=Montana|C=8)&D=6] [C=D] BTREE FILESCAN [A,B,C,D] 5\cf0 \
+smalldata_part1.txt table record inserted: 502\
+Number of disk reads: 89\
+Number of disk writes: 109\
+smalldata_part2.txt table record inserted: 500\
+Number of disk reads: 91\
+Number of disk writes: 162\
+Outer Table Records using BTREE\
+[[New_Hampshire, Business, 6, 6], [New_Hampshire, District_of_Columbia, 6, 6]]\
+Inner Table Records using FILESCAN\
+[[Vermont, Idaho, 8, 6], [Montana, Delaware, 9, 6], [Colorado, Singapore, 8, 6], [Montana, Kansas, 8, 6], [Montana, North_Dakota, 0, 6], [New_Hampshire, West_Virginia, 8, 6], [Business, Montana, 8, 6]]\
+[smalldata_part1.C, =, smalldata_part2.D]\
+[New_Hampshire, Vermont, Business, Idaho, 6, 8, 6, 6]\
+[New_Hampshire, Montana, Business, Delaware, 6, 9, 6, 6]\
+[New_Hampshire, Colorado, Business, Singapore, 6, 8, 6, 6]\
+[New_Hampshire, Montana, Business, Kansas, 6, 8, 6, 6]\
+[New_Hampshire, Montana, Business, North_Dakota, 6, 0, 6, 6]\
+[New_Hampshire, New_Hampshire, Business, West_Virginia, 6, 8, 6, 6]\
+[New_Hampshire, Business, Business, Montana, 6, 8, 6, 6]\
+[New_Hampshire, Vermont, District_of_Columbia, Idaho, 6, 8, 6, 6]\
+[New_Hampshire, Montana, District_of_Columbia, Delaware, 6, 9, 6, 6]\
+[New_Hampshire, Colorado, District_of_Columbia, Singapore, 6, 8, 6, 6]\
+[New_Hampshire, Montana, District_of_Columbia, Kansas, 6, 8, 6, 6]\
+[New_Hampshire, Montana, District_of_Columbia, North_Dakota, 6, 0, 6, 6]\
+[New_Hampshire, New_Hampshire, District_of_Columbia, West_Virginia, 6, 8, 6, 6]\
+[New_Hampshire, Business, District_of_Columbia, Montana, 6, 8, 6, 6]\
+Join operation completed\
+Number of disk reads: 574\
+Number of disk writes: 259\
+**********COLUMNAR NESTED LOOP JOIN SUCCESSFULLY COMPLETED**********\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\pardirnatural\partightenfactor0
+\cf0 \
+\pard\pardeftab720\partightenfactor0
+\cf0 Enter the query in this format (bmj COLUMNDB OUTTERFILE INNERFILE [TARGETCOLUMNNAMES] [LEFTCONST] [RIGHTCONST] [EQUICONST] NUMBUF )\
+Replacer: Clock\
+\
+\pard\pardeftab720\partightenfactor0
+\cf2 bmj column smalldata_part1 smalldata_part2 [A] [(A=New_Hampshire|C=8)&D=6&C=6] [(A=Montana|C=8)&D=6] [C=D]  5\cf0 \
+smalldata_part1.txt table record inserted: 39\
+Number of disk reads: 14\
+Number of disk writes: 2\
+smalldata_part2.txt table record inserted: 101\
+Number of disk reads: 16\
+Number of disk writes: 18\
+Enter Columnar filename:\
+\cf2 smalldata_part1\cf0 \
+Enter column name for index: \
+\cf2 A\cf0 \
+Creating BitMap on column: A\
+Creating index on: South_Dakota\
+Creating index on: Connecticut\
+Creating index on: New_Hampshire\
+Creating index on: Montana\
+Creating index on: Vermont\
+Creating index on: Kentucky\
+Creating index on: Delaware\
+Creating index on: Colorado\
+Creating index on: Puerto_Rico\
+Creating index on: Indiana\
+Creating index on: Business\
+Creating index on: Nevada\
+Creating index on: North_Dakota\
+Creating index on: Oklahoma\
+Creating index on: West_Virginia\
+Creating index on: Idaho\
+Number of disk reads: 5\
+Number of disk writes: 32\
+Do you want to create a BITMAP index again?(Y/N):\
+\cf2 Y\cf0 \
+Y\
+Enter Columnar filename:\
+\cf2 smalldata_part1\cf0 \
+Enter column name for index: \
+\cf2 C\cf0 \
+Creating BitMap on column: C\
+Creating index on: 6\
+Creating index on: 8\
+Creating index on: 2\
+Creating index on: 4\
+Creating index on: 1\
+Creating index on: 9\
+Creating index on: 3\
+Creating index on: 0\
+Creating index on: 7\
+Creating index on: 5\
+Number of disk reads: 2\
+Number of disk writes: 20\
+Do you want to create a BITMAP index again?(Y/N):\
+\cf2 Y\cf0 \
+Y\
+Enter Columnar filename:\
+\cf2 smalldata_part1\cf0 \
+Enter column name for index: \
+\cf2 D\cf0 \
+Creating BitMap on column: D\
+Creating index on: 3\
+Creating index on: 8\
+Creating index on: 1\
+Creating index on: 9\
+Creating index on: 6\
+Creating index on: 0\
+Creating index on: 4\
+Creating index on: 5\
+Creating index on: 7\
+Creating index on: 2\
+Number of disk reads: 2\
+Number of disk writes: 20\
+Do you want to create a BITMAP index again?(Y/N):\
+\cf2 Y\cf0 \
+Y\
+Enter Columnar filename:\
+\cf2 smalldata_part2\cf0 \
+Enter column name for index: \
+\cf2 A\cf0 \
+Creating BitMap on column: A\
+Creating index on: Connecticut\
+Creating index on: Idaho\
+Creating index on: Montana\
+Creating index on: North_Dakota\
+Creating index on: New_Hampshire\
+Creating index on: Colorado\
+Creating index on: West_Virginia\
+Creating index on: Puerto_Rico\
+Creating index on: Kentucky\
+Creating index on: Oklahoma\
+Creating index on: Delaware\
+Creating index on: South_Dakota\
+Creating index on: Singapore\
+Creating index on: Arkansas\
+Creating index on: Kansas\
+Creating index on: Nevada\
+Creating index on: Indiana\
+Creating index on: Business\
+Creating index on: District_of_Columbia\
+Creating index on: Vermont\
+Number of disk reads: 4\
+Number of disk writes: 40\
+Do you want to create a BITMAP index again?(Y/N):\
+\cf2 Y\cf0 \
+Y\
+Enter Columnar filename:\
+\cf2 smalldata_part2\cf0 \
+Enter column name for index: \
+\cf2 C\cf0 \
+Creating BitMap on column: C\
+Creating index on: 2\
+Creating index on: 6\
+Creating index on: 8\
+Creating index on: 9\
+Creating index on: 4\
+Creating index on: 3\
+Creating index on: 7\
+Creating index on: 1\
+Creating index on: 0\
+Creating index on: 5\
+Number of disk reads: 2\
+Number of disk writes: 20\
+Do you want to create a BITMAP index again?(Y/N):\
+\cf2 Y\cf0 \
+Y\
+Enter Columnar filename:\
+\cf2 smalldata_part2\cf0 \
+Enter column name for index: \
+\cf2 D\cf0 \
+Creating BitMap on column: D\
+Creating index on: 0\
+Creating index on: 5\
+Creating index on: 6\
+Creating index on: 7\
+Creating index on: 1\
+Creating index on: 3\
+Creating index on: 4\
+Creating index on: 8\
+Creating index on: 9\
+Creating index on: 2\
+Number of disk reads: 2\
+Number of disk writes: 20\
+Do you want to create a BITMAP index again?(Y/N):\
+\cf2 N\cf0 \
+N\
+New_Hampshire Montana \
+New_Hampshire Colorado \
+New_Hampshire Business \
+\pard\pardeftab720\partightenfactor0
+\cf0 Join operation completed\
+Number of disk reads: 99\
+Number of disk writes: 186\
+\pard\pardeftab720\partightenfactor0
+\cf0 **********BITMAP EQUALITY JOIN SUCCESSFULLY COMPLETED**********\
+\
+}
